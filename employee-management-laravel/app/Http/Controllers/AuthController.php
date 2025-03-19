@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\Employee;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -12,25 +12,25 @@ class AuthController extends Controller
     // Đăng nhập
     public function login(Request $request)
 {
-    $user = User::where('email', $request->email)->first();
+    $employee = Employee::where('email', $request->email)->first();
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
+    if (!$employee || !Hash::check($request->password, $employee->password)) {
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    $token = $user->createToken('authToken')->plainTextToken;
+    $token = $employee->createToken('authToken')->plainTextToken;
 
     return response()->json([
         'access_token' => $token,
         'token_type' => 'Bearer',
-        'user' => $user
+        'employee' => $employee
     ]);
 }
 
     // Đăng xuất
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
+        $request->employee()->tokens()->delete();
         return response()->json(['message' => 'Logged out']);
     }
 }

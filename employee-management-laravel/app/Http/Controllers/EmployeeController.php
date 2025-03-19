@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -11,23 +11,23 @@ class EmployeeController extends Controller
 {
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $employee = Auth::employee();
 
-        if (!$user) {
+        if (!$employee) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        if ($user->role_id == 1) {
+        if ($employee->role_id == 1) {
             // Admin: Trả về tất cả nhân viên (trừ chính họ)
-            $employees = User::where('id', '!=', $user->id)->get();
-        } elseif ($user->role_id == 2) {
+            $employees = Employee::where('id', '!=', $employee->id)->get();
+        } elseif ($employee->role_id == 2) {
             // Leader: Chỉ lấy nhân viên cùng phòng ban (trừ chính họ)
-            $employees = User::where('department_id', $user->department_id)
-                             ->where('id', '!=', $user->id)
+            $employees = Employee::where('department_id', $employee->department_id)
+                             ->where('id', '!=', $employee->id)
                              ->get();
         } else {
             // Employee: Chỉ xem được thông tin bản thân và đồng nghiệp cùng phòng ban
-            $employees = User::where('department_id', $user->department_id)->get();
+            $employees = Employee::where('department_id', $employee->department_id)->get();
         }
 
         return response()->json($employees);
