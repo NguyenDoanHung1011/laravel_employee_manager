@@ -3,34 +3,35 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Commands\LoginUserCommand;
+use App\Commands\LogoutUserCommand;
+use App\DTOs\LoginDTO;
 
 class AuthController extends Controller
 {
-    // Đăng nhập
-    public function login(Request $request)
-{
-    $user = User::where('email', $request->email)->first();
+    protected $loginUserCommand;
+    protected $logoutUserCommand;
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
-        return response()->json(['message' => 'Unauthorized'], 401);
+    public function __construct(LoginUserCommand $loginUserCommand, LogoutUserCommand $logoutUserCommand)
+    {
+        $this->loginUserCommand = $loginUserCommand;
+        $this->logoutUserCommand = $logoutUserCommand;
     }
 
-    $token = $user->createToken('authToken')->plainTextToken;
+    public function login(Request $request)
+    {
+        $dto = new LoginDTO($request->email, $request->password);
+        $result = $this->loginUserCommand->execute($dto);
 
-    return response()->json([
-        'access_token' => $token,
-        'token_type' => 'Bearer',
-        'user' => $user
-    ]);
-}
+        if (!$result) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
 
-    // Đăng xuất
+        return response()->json($result);
+    }
+
     public function logout(Request $request)
     {
-        $request->user()->tokens()->delete();
-        return response()->json(['message' => 'Logged out']);
+        return response()->json($this->logoutUserCommand->execute($request));
     }
 }

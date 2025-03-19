@@ -24,6 +24,6 @@ bootstrapApplication(AppComponent, {
       MatCardModule,
       MatFormFieldModule,
       FormsModule
-    ), provideAnimationsAsync(),
+    ), provideAnimationsAsync(), provideAnimationsAsync(),
   ],
 }).catch(err => console.error(err));
