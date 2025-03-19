@@ -17,8 +17,8 @@ class EmployeeController extends Controller
 
     public function index(Request $request)
     {
-        $user = Auth::user();
-        if (!$user) {
+        $employee = Auth::employee();
+        if (!$employee) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 

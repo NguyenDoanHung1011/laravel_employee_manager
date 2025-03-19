@@ -2,37 +2,26 @@
 
 namespace App\Queries;
 
-use App\Models\User;
+use App\Repositories\EmployeeRepository;
 use Illuminate\Support\Facades\Auth;
-use App\DTOs\EmployeeDTO;
 
 class GetEmployeesQuery
 {
-    public function execute(): array
+    protected $employeeRepository;
+
+    public function __construct(EmployeeRepository $employeeRepository)
     {
-        $user = Auth::user();
+        $this->employeeRepository = $employeeRepository;
+    }
 
-        if (!$user) {
-            return [];
+    public function execute()
+    {
+        $employee = Auth::employee();
+
+        if (!$employee) {
+            return null;
         }
 
-        $query = User::query();
-
-        if ($user->role_id == 1) {
-            $query->where('id', '!=', $user->id);
-        } elseif ($user->role_id == 2) {
-            $query->where('department_id', $user->department_id)
-                  ->where('id', '!=', $user->id);
-        } else {
-            $query->where('department_id', $user->department_id);
-        }
-
-        return $query->get()->map(fn($employee) => new EmployeeDTO(
-            $employee->id,
-            $employee->name,
-            $employee->email,
-            $employee->role_id,
-            $employee->department_id
-        ))->toArray();
+        return $this->employeeRepository->getEmployeesByRole($employee);
     }
 }

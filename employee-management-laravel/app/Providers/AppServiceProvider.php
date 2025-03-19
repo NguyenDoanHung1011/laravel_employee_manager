@@ -4,8 +4,9 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Queries\GetEmployeesQuery;
-use App\Commands\LoginUserCommand;
-use App\Commands\LogoutUserCommand;
+use App\Commands\LoginEmployeeCommand;
+use App\Commands\LogoutEmployeeCommand;
+use App\Repositories\EmployeeRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,9 +17,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(EmployeeRepository::class);
         $this->app->singleton(GetEmployeesQuery::class);
-        $this->app->singleton(LoginUserCommand::class);
-        $this->app->singleton(LogoutUserCommand::class);
+        $this->app->singleton(LoginEmployeeCommand::class);
+        $this->app->singleton(LogoutEmployeeCommand::class);
     }
 
     /**

@@ -3,25 +3,25 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Commands\LoginUserCommand;
-use App\Commands\LogoutUserCommand;
+use App\Commands\LoginEmployeeCommand;
+use App\Commands\LogoutEmployeeCommand;
 use App\DTOs\LoginDTO;
 
 class AuthController extends Controller
 {
-    protected $loginUserCommand;
-    protected $logoutUserCommand;
+    protected $loginEmployeeCommand;
+    protected $logoutEmployeeCommand;
 
-    public function __construct(LoginUserCommand $loginUserCommand, LogoutUserCommand $logoutUserCommand)
+    public function __construct(LoginEmployeeCommand $loginEmployeeCommand, LogoutEmployeeCommand $logoutEmployeeCommand)
     {
-        $this->loginUserCommand = $loginUserCommand;
-        $this->logoutUserCommand = $logoutUserCommand;
+        $this->loginEmployeeCommand = $loginEmployeeCommand;
+        $this->logoutEmployeeCommand = $logoutEmployeeCommand;
     }
 
     public function login(Request $request)
     {
         $dto = new LoginDTO($request->email, $request->password);
-        $result = $this->loginUserCommand->execute($dto);
+        $result = $this->loginEmployeeCommand->execute($dto);
 
         if (!$result) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -32,6 +32,6 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        return response()->json($this->logoutUserCommand->execute($request));
+        return response()->json($this->logoutEmployeeCommand->execute($request));
     }
 }
