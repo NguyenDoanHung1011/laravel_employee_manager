@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 =======
 use App\Queries\Employee\GetEmployeesQuery;
 use App\Handlers\Queries\Employee\GetEmployeesHandler;
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 use Illuminate\Support\Facades\Auth;
 
@@ -23,6 +26,7 @@ class EmployeeController extends Controller
     public function index()
     {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         $employee = Auth::employee();
         if (!$employee) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -30,6 +34,8 @@ class EmployeeController extends Controller
 
         $employees = $this->getEmployeesQuery->execute();
 =======
+=======
+>>>>>>> Stashed changes
         $user = Auth::user();
 
         if (!$user) {
@@ -39,6 +45,9 @@ class EmployeeController extends Controller
         $query = new GetEmployeesQuery($user->id, $user->role_id, $user->department_id);
         $employees = $this->handler->handle($query);
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
         return response()->json($employees);
     }
