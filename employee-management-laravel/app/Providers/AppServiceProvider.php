@@ -13,7 +13,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton(LoginUserCommand::class, function ($app) {
+            return new LoginUserCommand();
+        });
+
+        $this->app->singleton(LogoutUserCommand::class, function ($app) {
+            return new LogoutUserCommand();
+        });
+
+        $this->app->singleton(GetEmployeesQuery::class, function ($app) {
+            return new GetEmployeesQuery();
+        });
     }
 
     /**
