@@ -1,23 +1,23 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Services;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 
-class AuthController extends Controller
+class AuthService
 {
-    public function login(Request $request)
+    public function login($email, $password)
     {
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $email)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!$user || !Hash::check($password, $user->password)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
+        // Tạo token API cho user
         $token = Str::random(60);
         $user->api_token = hash('sha256', $token);
         $user->save();
@@ -29,12 +29,11 @@ class AuthController extends Controller
         ]);
     }
 
-    public function logout(Request $request)
+    public function logout($user)
     {
-        $user = $request->user();
         $user->api_token = null;
         $user->save();
-
-        return response()->json(['message' => 'Logged out']);
+        
+        return response()->json(['message' => 'Logged out successfully']);
     }
 }
